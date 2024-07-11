@@ -1,0 +1,45 @@
+.users-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.users-list li {
+  cursor: pointer;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #0f0101;
+  border-radius: 4px;
+}
+
+.users-list li:hover {
+  background-color: #088292;
+}
+
+.user-form {
+  margin-top: 20px;
+}
+
+.user-form label {
+  display: block;
+  margin: 10px 0;
+}
+
+.user-form select,
+.user-form input {
+  display: block;
+  margin-top: 5px;
+}
+
+.user-form button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-form button:hover {
+  background-color: #0056b3;
+}

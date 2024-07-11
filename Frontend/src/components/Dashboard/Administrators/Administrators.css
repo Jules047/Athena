@@ -1,0 +1,37 @@
+.administrators-dashboard {
+    display: flex;
+  }
+  
+  .admin-navbar {
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    height: 100vh;
+    padding: 20px 0;
+  }
+  
+  .admin-navbar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .admin-navbar li {
+    margin: 10px 0;
+  }
+  
+  .admin-navbar a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+  }
+  
+  .admin-navbar a:hover {
+    background-color: #575757;
+  }
+  
+  .admin-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
