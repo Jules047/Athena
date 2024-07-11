@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Commandes = void 0;
+// src/entity/Commandes.ts
 const typeorm_1 = require("typeorm");
 let Commandes = class Commandes {
 };
@@ -21,15 +22,19 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ length: 100 }),
     __metadata("design:type", String)
-], Commandes.prototype, "nom_commande", void 0);
+], Commandes.prototype, "nom", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    __metadata("design:type", String)
+], Commandes.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    __metadata("design:type", String)
+], Commandes.prototype, "type", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "int", nullable: true }),
     __metadata("design:type", Number)
-], Commandes.prototype, "client_id", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ length: 50, nullable: true }),
-    __metadata("design:type", String)
-], Commandes.prototype, "statut_commande", void 0);
+], Commandes.prototype, "estimation", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", Date)
@@ -39,5 +44,5 @@ __decorate([
     __metadata("design:type", Date)
 ], Commandes.prototype, "modifie_le", void 0);
 exports.Commandes = Commandes = __decorate([
-    (0, typeorm_1.Entity)({ name: "commandes" }) // Assurez-vous que le nom de la table correspond à celui de votre base de données
+    (0, typeorm_1.Entity)({ name: "commandes" })
 ], Commandes);
