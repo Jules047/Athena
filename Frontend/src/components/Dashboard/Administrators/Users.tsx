@@ -57,7 +57,11 @@ const Users: React.FC = () => {
     if (selectedUser) {
       try {
         const token = localStorage.getItem('token');
-        await api.put(`/utilisateurs/${selectedUser.utilisateur_id}`, selectedUser, {
+
+        // Create an object without mot_de_passe
+        const { mot_de_passe, ...userWithoutPassword } = selectedUser;
+
+        await api.put(`/utilisateurs/${selectedUser.utilisateur_id}`, userWithoutPassword, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
