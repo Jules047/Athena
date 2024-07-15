@@ -5,11 +5,7 @@ import {
 } from '@mui/material';
 import { Edit, Delete, Add } from '@mui/icons-material';
 import axios from 'axios';
-<<<<<<< HEAD
-import CommandeForm from './CommandeForme';
-=======
 import CommandeForm from './CommandeForm';
->>>>>>> origin/master
 
 interface Commande {
   commande_id: number;
@@ -169,8 +165,4 @@ const CommandesList: React.FC = () => {
   );
 };
 
-<<<<<<< HEAD
 export default CommandesList;
-=======
-export default CommandesList;
->>>>>>> origin/master
