@@ -1,6 +1,9 @@
-import { DataSource } from "typeorm";
+import { DataSource } from 'typeorm';
 import "reflect-metadata";
-import path from "path";
+import { Project } from './entity/Project';
+import { Utilisateurs } from './entity/Utilisateurs';
+import { OfValidated } from './entity/OfValidated';
+import { Document } from './entity/Document';
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -9,11 +12,11 @@ export const AppDataSource = new DataSource({
   username: "postgres",
   password: "1234",
   database: "athena",
-  synchronize: false, // Ensure this is false in production to avoid unintended schema changes
-  logging: false,
-  entities: [path.join(__dirname, '/entities/*.ts')],
-  migrations: [path.join(__dirname, '/migration/*.ts')],
-  subscribers: [path.join(__dirname, '/subscriber/**/*.ts')],
+  synchronize: true,
+  logging: true,
+  entities: [Project, Utilisateurs, OfValidated, Document],
+  migrations: ["src/migrations/**/*.ts"],
+  subscribers: ["src/subscribers/**/*.ts"],
 });
 
 AppDataSource.initialize()

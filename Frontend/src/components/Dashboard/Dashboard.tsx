@@ -12,19 +12,9 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -39,6 +29,8 @@ import MessageIcon from '@mui/icons-material/Message';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 import Administrators from './Administrators/Administrators';
 import IntranetSettings from './Parametre_intranet/IntranetSettings';
@@ -51,8 +43,11 @@ import Orders from './Administrators/Orders';
 import Statistics from '../Dashboard/Administrators/Statistics';
 import CollaboratorPage from './Parametre_intranet/CollaboratorPage';
 import AtelierPage from './Parametre_intranet/AtelierPage';
+import OfValidatedPage from '../OfValidatedPage';
+import DocumentPage from '../DocumentPage';
+import ProjectPage from '../ProjectPage';
 import './Dashboard.css';
-import { Button } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 const drawerWidth = 240;
 const miniDrawerWidth = 60;
@@ -164,6 +159,7 @@ const Dashboard: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [openAdmin, setOpenAdmin] = React.useState(false);
   const [openIntranet, setOpenIntranet] = React.useState(false);
+  const [openFabricationOrders, setOpenFabricationOrders] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -188,6 +184,10 @@ const Dashboard: React.FC = () => {
 
   const handleClickIntranet = () => {
     setOpenIntranet(!openIntranet);
+  };
+
+  const handleClickFabricationOrders = () => {
+    setOpenFabricationOrders(!openFabricationOrders);
   };
 
   const handleLogoutClick = () => {
@@ -308,10 +308,35 @@ const Dashboard: React.FC = () => {
               </ListItemButton>
             </List>
           </Collapse>
-          <ListItemButton component={Link} to="fabrication-orders">
-            <ListItemIcon><AssignmentTurnedInIcon /></ListItemIcon>
+          <ListItemButton onClick={handleClickFabricationOrders}>
+            <ListItemIcon>
+              <AssignmentTurnedInIcon />
+            </ListItemIcon>
             <ListItemText primary="Ordres de Fabrication" />
+            {openFabricationOrders ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
+          <Collapse in={openFabricationOrders} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemButton sx={{ pl: 4 }} component={Link} to="fabrication-orders/ofvalidated">
+                <ListItemIcon>
+                  <CheckCircleOutlineIcon />
+                </ListItemIcon>
+                <ListItemText primary="OF Validated" />
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 4 }} component={Link} to="fabrication-orders/documents">
+                <ListItemIcon>
+                  <AssignmentTurnedInIcon />
+                </ListItemIcon>
+                <ListItemText primary="Documents" />
+              </ListItemButton>
+              <ListItemButton sx={{ pl: 4 }} component={Link} to="fabrication-orders/projects">
+                <ListItemIcon>
+                  <AutoStoriesIcon />
+                </ListItemIcon>
+                <ListItemText primary="Projects" />
+              </ListItemButton>
+            </List>
+          </Collapse>
           <ListItemButton component={Link} to="daily-reports">
             <ListItemIcon><TimelineIcon /></ListItemIcon>
             <ListItemText primary="Rapport Journalier d'activités" />
@@ -343,6 +368,9 @@ const Dashboard: React.FC = () => {
           <Route path="intranet-settings/collaborator" element={<CollaboratorPage />} />
           <Route path="intranet-settings/atelier" element={<AtelierPage />} />
           <Route path="fabrication-orders/*" element={<FabricationOrders />}>
+            <Route path="ofvalidated" element={<OfValidatedPage />} />
+            <Route path="documents" element={<DocumentPage />} />
+            <Route path="projects" element={<ProjectPage />} />
           </Route>
           <Route path="daily-reports" element={<DailyReports />} />
           <Route path="messaging" element={<Messaging />} />

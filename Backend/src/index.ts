@@ -15,6 +15,9 @@ import agendaRoutes from "./routes/agendaRoutes";
 import AuthRoutes from "./routes/authRoutes";
 import authMiddleware from "./middleware/authMiddleware";
 import ordreDeFabricationRoutes from "./routes/ordreDeFabricationRoutes";
+import projectRoutes from "./routes/projectRoutes";
+import documentRoutes from "./routes/documentRoutes";
+import ofValidatedRoutes from "./routes/ofValidatedRoutes";
 
 dotenv.config(); // Charge les variables d'environnement à partir du fichier .env
 
@@ -35,6 +38,9 @@ createConnection().then(async () => {
   app.use('/messagerieInterne', authMiddleware, messagerieRoutes);
   app.use('/agenda', authMiddleware, agendaRoutes);
   app.use('/ordres-de-fabrication', ordreDeFabricationRoutes);
+  app.use('/projects', projectRoutes);
+  app.use('/documents', documentRoutes);
+  app.use('/of_validated', ofValidatedRoutes);
 
   app.listen(3000, () => {
     console.log('Server is running on port 3000');

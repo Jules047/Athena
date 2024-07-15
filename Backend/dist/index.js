@@ -29,6 +29,9 @@ const agendaRoutes_1 = __importDefault(require("./routes/agendaRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const authMiddleware_1 = __importDefault(require("./middleware/authMiddleware"));
 const ordreDeFabricationRoutes_1 = __importDefault(require("./routes/ordreDeFabricationRoutes"));
+const projectRoutes_1 = __importDefault(require("./routes/projectRoutes"));
+const documentRoutes_1 = __importDefault(require("./routes/documentRoutes"));
+const ofValidatedRoutes_1 = __importDefault(require("./routes/ofValidatedRoutes"));
 dotenv_1.default.config(); // Charge les variables d'environnement à partir du fichier .env
 (0, typeorm_1.createConnection)().then(() => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, express_1.default)();
@@ -45,6 +48,9 @@ dotenv_1.default.config(); // Charge les variables d'environnement à partir du 
     app.use('/messagerieInterne', authMiddleware_1.default, messagerieRoutes_1.default);
     app.use('/agenda', authMiddleware_1.default, agendaRoutes_1.default);
     app.use('/ordres-de-fabrication', ordreDeFabricationRoutes_1.default);
+    app.use('/projects', projectRoutes_1.default);
+    app.use('/documents', documentRoutes_1.default);
+    app.use('/of_validated', ofValidatedRoutes_1.default);
     app.listen(3000, () => {
         console.log('Server is running on port 3000');
     });

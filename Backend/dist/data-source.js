@@ -1,12 +1,12 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppDataSource = void 0;
 const typeorm_1 = require("typeorm");
 require("reflect-metadata");
-const path_1 = __importDefault(require("path"));
+const Project_1 = require("./entity/Project");
+const Utilisateurs_1 = require("./entity/Utilisateurs");
+const OfValidated_1 = require("./entity/OfValidated");
+const Document_1 = require("./entity/Document");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
     host: "localhost",
@@ -14,11 +14,11 @@ exports.AppDataSource = new typeorm_1.DataSource({
     username: "postgres",
     password: "1234",
     database: "athena",
-    synchronize: false, // Ensure this is false in production to avoid unintended schema changes
-    logging: false,
-    entities: [path_1.default.join(__dirname, '/entities/*.ts')],
-    migrations: [path_1.default.join(__dirname, '/migration/*.ts')],
-    subscribers: [path_1.default.join(__dirname, '/subscriber/**/*.ts')],
+    synchronize: true,
+    logging: true,
+    entities: [Project_1.Project, Utilisateurs_1.Utilisateurs, OfValidated_1.OfValidated, Document_1.Document],
+    migrations: ["src/migrations/**/*.ts"],
+    subscribers: ["src/subscribers/**/*.ts"],
 });
 exports.AppDataSource.initialize()
     .then(() => {
