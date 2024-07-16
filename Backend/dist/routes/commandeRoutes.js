@@ -20,22 +20,14 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(commandes);
     }
     catch (error) {
-<<<<<<< HEAD
         console.error('Error fetching commandes:', error);
         res.status(500).json({ message: 'Error fetching commandes', error: error.message });
-=======
-        res.status(500).json({ message: 'Error fetching commandes', error });
->>>>>>> origin/master
     }
 }));
 // Get a specific Commande by ID
 router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-<<<<<<< HEAD
         const commande = yield (0, typeorm_1.getRepository)(Commandes_1.Commandes).findOne({ where: { commande_id: Number(req.params.id) } });
-=======
-        const commande = yield (0, typeorm_1.getRepository)(Commandes_1.Commandes).findOne({ where: { commande_id: req.params.id } });
->>>>>>> origin/master
         if (commande) {
             res.json(commande);
         }
@@ -44,12 +36,8 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
     catch (error) {
-<<<<<<< HEAD
         console.error('Error fetching commande:', error);
         res.status(500).json({ message: 'Error fetching commande', error: error.message });
-=======
-        res.status(500).json({ message: 'Error fetching commande', error });
->>>>>>> origin/master
     }
 }));
 // Create a new Commande
@@ -58,32 +46,10 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const commande = (0, typeorm_1.getRepository)(Commandes_1.Commandes).create(req.body);
         const result = yield (0, typeorm_1.getRepository)(Commandes_1.Commandes).save(commande);
         res.status(201).json(result);
-<<<<<<< HEAD
     }
     catch (error) {
         console.error('Error creating commande:', error);
         res.status(500).json({ message: 'Error creating commande', error: error.message });
-=======
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error creating commande', error });
-    }
-}));
-router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const commande = yield (0, typeorm_1.getRepository)(Commandes_1.Commandes).findOne({ where: { commande_id: req.params.id } });
-        if (commande) {
-            (0, typeorm_1.getRepository)(Commandes_1.Commandes).merge(commande, req.body);
-            const result = yield (0, typeorm_1.getRepository)(Commandes_1.Commandes).save(commande);
-            res.json(result);
-        }
-        else {
-            res.status(404).json({ message: 'Commande not found' });
-        }
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error updating commande', error });
->>>>>>> origin/master
     }
 }));
 // Update a specific Commande by ID
@@ -109,7 +75,6 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, typeorm_1.getRepository)(Commandes_1.Commandes).delete(req.params.id);
-<<<<<<< HEAD
         if (result.affected) {
             res.json({ message: 'Commande deleted successfully' });
         }
@@ -120,12 +85,6 @@ router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (error) {
         console.error('Error deleting commande:', error);
         res.status(500).json({ message: 'Error deleting commande', error: error.message });
-=======
-        res.json(result);
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error deleting commande', error });
->>>>>>> origin/master
     }
 }));
 exports.default = router;

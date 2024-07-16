@@ -8,9 +8,6 @@ export class OfValidated {
   @PrimaryGeneratedColumn()
     id!: number;
 
-  @ManyToOne(() => Project, project => project.ofValidated)
-    project!: Project;
-
   @ManyToOne(() => Utilisateurs)
     createdBy!: Utilisateurs;
 
@@ -22,6 +19,9 @@ export class OfValidated {
 
   @OneToMany(() => Document, document => document.ofValidated)
     documents!: Document[];
+
+  @ManyToOne(() => Project) // Update the type of the relationship
+    ofValidated!: Project; // Update the property name
 }
 
 export default OfValidated;

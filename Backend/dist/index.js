@@ -32,6 +32,8 @@ const ordreDeFabricationRoutes_1 = __importDefault(require("./routes/ordreDeFabr
 const projectRoutes_1 = __importDefault(require("./routes/projectRoutes"));
 const documentRoutes_1 = __importDefault(require("./routes/documentRoutes"));
 const ofValidatedRoutes_1 = __importDefault(require("./routes/ofValidatedRoutes"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config(); // Charge les variables d'environnement à partir du fichier .env
 (0, typeorm_1.createConnection)().then(() => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, express_1.default)();
@@ -51,7 +53,22 @@ dotenv_1.default.config(); // Charge les variables d'environnement à partir du 
     app.use('/projects', projectRoutes_1.default);
     app.use('/documents', documentRoutes_1.default);
     app.use('/of_validated', ofValidatedRoutes_1.default);
-    app.listen(3000, () => {
-        console.log('Server is running on port 3000');
+    // Serve static files from the "pdfs" directory
+    app.use('/pdfs', express_1.default.static(path_1.default.join(__dirname, 'pdfs')));
+    // Route to download PDF
+    app.get('/download/:filename', (req, res) => {
+        const filename = req.params.filename;
+        const filePath = path_1.default.join(__dirname, 'pdfs', filename);
+        if (fs_1.default.existsSync(filePath)) {
+            res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+            res.sendFile(filePath);
+        }
+        else {
+            res.status(404).send('File not found');
+        }
+    });
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
     });
 })).catch(error => console.log(error));

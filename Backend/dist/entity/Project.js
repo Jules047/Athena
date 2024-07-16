@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 const typeorm_1 = require("typeorm");
-const OfValidated_1 = require("./OfValidated");
 let Project = class Project {
 };
 exports.Project = Project;
@@ -32,9 +31,14 @@ __decorate([
     __metadata("design:type", String)
 ], Project.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => OfValidated_1.OfValidated, ofValidated => ofValidated.project),
-    __metadata("design:type", Array)
-], Project.prototype, "ofValidated", void 0);
+    (0, typeorm_1.Column)({ nullable: true }) // Permettre temporairement NULL pour éviter des erreurs lors de la création initiale
+    ,
+    __metadata("design:type", String)
+], Project.prototype, "filePath", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
+    __metadata("design:type", Date)
+], Project.prototype, "cree_le", void 0);
 exports.Project = Project = __decorate([
     (0, typeorm_1.Entity)()
 ], Project);

@@ -18,6 +18,8 @@ import ordreDeFabricationRoutes from "./routes/ordreDeFabricationRoutes";
 import projectRoutes from "./routes/projectRoutes";
 import documentRoutes from "./routes/documentRoutes";
 import ofValidatedRoutes from "./routes/ofValidatedRoutes";
+import path from "path";
+import fs from "fs";
 
 dotenv.config(); // Charge les variables d'environnement à partir du fichier .env
 
@@ -42,8 +44,25 @@ createConnection().then(async () => {
   app.use('/documents', documentRoutes);
   app.use('/of_validated', ofValidatedRoutes);
 
-  app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-  });
+  // Serve static files from the "pdfs" directory
+app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
+
+// Route to download PDF
+app.get('/download/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, 'pdfs', filename);
+
+  if (fs.existsSync(filePath)) {
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send('File not found');
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 }).catch(error => console.log(error));

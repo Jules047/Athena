@@ -18,7 +18,6 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const ofValidatedRepository = (0, typeorm_1.getRepository)(OfValidated_1.OfValidated);
     const { project, createdBy, approvedBy, approvedAt } = req.body;
     const ofValidated = new OfValidated_1.OfValidated();
-    ofValidated.project = project;
     ofValidated.createdBy = createdBy;
     ofValidated.approvedBy = approvedBy;
     ofValidated.approvedAt = approvedAt;
@@ -65,7 +64,6 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!ofValidated)
             return res.status(404).json({ message: 'OfValidated not found' });
         const { project, createdBy, approvedBy, approvedAt } = req.body;
-        ofValidated.project = project;
         ofValidated.createdBy = createdBy;
         ofValidated.approvedBy = approvedBy;
         ofValidated.approvedAt = approvedAt;

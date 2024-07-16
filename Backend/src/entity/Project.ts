@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { OfValidated } from './OfValidated';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class Project {
@@ -10,13 +9,16 @@ export class Project {
     name!: string;
 
   @Column({ nullable: true })
-    description!: string;
+    description?: string;
 
   @Column()
     status!: string;
 
-  @OneToMany(() => OfValidated, ofValidated => ofValidated.project)
-    ofValidated!: OfValidated[];
+  @Column({ nullable: true }) // Permettre temporairement NULL pour éviter des erreurs lors de la création initiale
+    filePath?: string;
+
+  @CreateDateColumn({ type: 'timestamp' })
+    cree_le!: Date;
 }
 
 export default Project;

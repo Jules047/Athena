@@ -10,7 +10,6 @@ router.post('/', async (req, res) => {
   const { project, createdBy, approvedBy, approvedAt } = req.body;
   
   const ofValidated = new OfValidated();
-  ofValidated.project = project;
   ofValidated.createdBy = createdBy;
   ofValidated.approvedBy = approvedBy;
   ofValidated.approvedAt = approvedAt;
@@ -57,7 +56,6 @@ router.put('/:id', async (req, res) => {
     if (!ofValidated) return res.status(404).json({ message: 'OfValidated not found' });
 
     const { project, createdBy, approvedBy, approvedAt } = req.body;
-    ofValidated.project = project;
     ofValidated.createdBy = createdBy;
     ofValidated.approvedBy = approvedBy;
     ofValidated.approvedAt = approvedAt;

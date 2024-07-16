@@ -22,10 +22,6 @@ __decorate([
     __metadata("design:type", Number)
 ], OfValidated.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Project_1.Project, project => project.ofValidated),
-    __metadata("design:type", Project_1.Project)
-], OfValidated.prototype, "project", void 0);
-__decorate([
     (0, typeorm_1.ManyToOne)(() => Utilisateurs_1.Utilisateurs),
     __metadata("design:type", Utilisateurs_1.Utilisateurs)
 ], OfValidated.prototype, "createdBy", void 0);
@@ -41,6 +37,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Document_1.Document, document => document.ofValidated),
     __metadata("design:type", Array)
 ], OfValidated.prototype, "documents", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Project_1.Project) // Update the type of the relationship
+    ,
+    __metadata("design:type", Project_1.Project)
+], OfValidated.prototype, "ofValidated", void 0);
 exports.OfValidated = OfValidated = __decorate([
     (0, typeorm_1.Entity)()
 ], OfValidated);
