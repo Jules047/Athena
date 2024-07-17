@@ -159,7 +159,7 @@ const ProjectPage: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h6">Liste des Projects</Typography>
+      <Typography variant="h6">Liste des Projets</Typography>
       {projects.length === 0 ? (
         <Typography variant="subtitle1">Aucun projet disponible</Typography>
       ) : (

@@ -167,7 +167,7 @@ const ProjectPage: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h6">Liste des Projects</Typography>
+      <Typography variant="h6">Liste des Projets</Typography>
       {projects.length === 0 ? (
         <Typography variant="subtitle1">Aucun projet disponible</Typography>
       ) : (
@@ -175,11 +175,11 @@ const ProjectPage: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell>Nom</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell>File Path</TableCell>
-                <TableCell>Created At</TableCell>
+                <TableCell>Fichier</TableCell>
+                <TableCell>Creer le</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -217,7 +217,7 @@ const ProjectPage: React.FC = () => {
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>{editingProject ? 'Modifier Project' : 'Ajouter Project'}</DialogTitle>
         <DialogContent>
-          <TextField label="Name" name="name" value={newProject.name || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
+          <TextField label="Nom" name="name" value={newProject.name || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
           <TextField label="Description" name="description" value={newProject.description || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
           <FormControl fullWidth margin="normal">
             <InputLabel id="status-label">Status</InputLabel>
@@ -240,7 +240,7 @@ const ProjectPage: React.FC = () => {
         </DialogActions>
       </Dialog>
       <Dialog open={confirmDialogOpen} onClose={handleConfirmDialogClose}>
-        <DialogTitle>Confirmer la suppression</DialogTitle>
+        <DialogTitle>Confirmer la suppression?</DialogTitle>
         <DialogContent>
           <Typography>Êtes-vous sûr de vouloir supprimer ce projet ?</Typography>
         </DialogContent>
