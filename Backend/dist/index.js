@@ -30,7 +30,6 @@ const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const authMiddleware_1 = __importDefault(require("./middleware/authMiddleware"));
 const ordreDeFabricationRoutes_1 = __importDefault(require("./routes/ordreDeFabricationRoutes"));
 const projectRoutes_1 = __importDefault(require("./routes/projectRoutes"));
-const documentRoutes_1 = __importDefault(require("./routes/documentRoutes"));
 const ofValidatedRoutes_1 = __importDefault(require("./routes/ofValidatedRoutes"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
@@ -51,19 +50,20 @@ dotenv_1.default.config(); // Charge les variables d'environnement à partir du 
     app.use('/agenda', authMiddleware_1.default, agendaRoutes_1.default);
     app.use('/ordres-de-fabrication', ordreDeFabricationRoutes_1.default);
     app.use('/projects', projectRoutes_1.default);
-    app.use('/documents', documentRoutes_1.default);
     app.use('/of_validated', ofValidatedRoutes_1.default);
-    // Serve static files from the "pdfs" directory
-    app.use('/pdfs', express_1.default.static(path_1.default.join(__dirname, 'pdfs')));
-    // Route to download PDF
+    // Serve static files from the "uploads" directory
+    app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, 'uploads')));
+    // Route to download uploaded file
     app.get('/download/:filename', (req, res) => {
         const filename = req.params.filename;
-        const filePath = path_1.default.join(__dirname, 'pdfs', filename);
+        const filePath = path_1.default.join(__dirname, 'uploads', filename);
+        console.log(`Request to download file at ${filePath}`);
         if (fs_1.default.existsSync(filePath)) {
             res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
             res.sendFile(filePath);
         }
         else {
+            console.error(`File not found at ${filePath}`);
             res.status(404).send('File not found');
         }
     });

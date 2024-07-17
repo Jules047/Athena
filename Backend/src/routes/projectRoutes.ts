@@ -1,20 +1,34 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 import { Project } from '../entity/Project';
-import PDFDocument from 'pdfkit';
-import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import path from 'path';
+import PDFDocument from 'pdfkit';
 
 const router = Router();
 
 // Configure multer for file uploads
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, '..', 'uploads');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath);
+      console.log(`Created directory ${uploadPath}`);
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage });
 
-// Ensure the pdf directory exists
-const pdfDir = path.join(__dirname, '../pdfs');
-if (!fs.existsSync(pdfDir)) {
-  fs.mkdirSync(pdfDir);
+// Ensure the uploads directory exists
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+  console.log(`Created directory ${uploadsDir}`);
 }
 
 // Helper function to generate PDF
@@ -27,7 +41,6 @@ const generatePDF = (project: Project, filePath: string) => {
     doc.fontSize(25).text(`Project Name: ${project.name}`);
     doc.fontSize(20).text(`Description: ${project.description}`);
     doc.fontSize(20).text(`Status: ${project.status}`);
-    doc.fontSize(15).text(`Created At: ${project.cree_le}`);
     doc.end();
 
     stream.on('finish', () => resolve());
@@ -47,12 +60,28 @@ router.post('/', upload.single('file'), async (req, res) => {
 
   try {
     const result = await projectRepository.save(project);
+    const projectId = result.id;
 
-    const filePath = path.join(pdfDir, `project_${result.id}.pdf`);
-    await generatePDF(result, filePath);
-    result.filePath = `/pdfs/project_${result.id}.pdf`;
+    if (req.file) {
+      const oldPath = path.join(uploadsDir, req.file.originalname);
+      const newFilename = `project_${projectId}${path.extname(req.file.originalname)}`;
+      const newPath = path.join(uploadsDir, newFilename);
 
-    await projectRepository.save(result);
+      fs.renameSync(oldPath, newPath);
+      console.log(`Renamed file to ${newFilename}`);
+      
+      result.filePath = `/uploads/${newFilename}`;
+      await projectRepository.save(result);
+    } else {
+      const newFilename = `project_${projectId}.pdf`;
+      const newPath = path.join(uploadsDir, newFilename);
+      
+      await generatePDF(project, newPath);
+      console.log(`Generated PDF for project ${projectId}`);
+
+      result.filePath = `/uploads/${newFilename}`;
+      await projectRepository.save(result);
+    }
 
     res.status(201).json(result);
   } catch (error: any) {
@@ -99,12 +128,28 @@ router.put('/:id', upload.single('file'), async (req, res) => {
     project.status = status;
 
     const result = await projectRepository.save(project);
+    const projectId = result.id;
 
-    const filePath = path.join(pdfDir, `project_${result.id}.pdf`);
-    await generatePDF(result, filePath);
-    result.filePath = `/pdfs/project_${result.id}.pdf`;
+    if (req.file) {
+      const oldPath = path.join(uploadsDir, req.file.originalname);
+      const newFilename = `project_${projectId}${path.extname(req.file.originalname)}`;
+      const newPath = path.join(uploadsDir, newFilename);
 
-    await projectRepository.save(result);
+      fs.renameSync(oldPath, newPath);
+      console.log(`Renamed file to ${newFilename}`);
+      
+      result.filePath = `/uploads/${newFilename}`;
+      await projectRepository.save(result);
+    } else if (!result.filePath) {
+      const newFilename = `project_${projectId}.pdf`;
+      const newPath = path.join(uploadsDir, newFilename);
+      
+      await generatePDF(project, newPath);
+      console.log(`Generated PDF for project ${projectId}`);
+
+      result.filePath = `/uploads/${newFilename}`;
+      await projectRepository.save(result);
+    }
 
     res.json(result);
   } catch (error: any) {
@@ -120,6 +165,15 @@ router.delete('/:id', async (req, res) => {
     const project = await projectRepository.findOne({ where: { id: parseInt(req.params.id) } });
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
+    // Delete associated file if it exists
+    if (project.filePath) {
+      const filePath = path.join(__dirname, '..', project.filePath);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`Deleted file at ${filePath}`);
+      }
+    }
+
     await projectRepository.remove(project);
     res.json({ message: 'Project deleted' });
   } catch (error: any) {
@@ -128,15 +182,22 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Download PDF
+// Serve static files from the "uploads" directory
+import express from 'express';
+
+router.use('/uploads', express.static(uploadsDir));
+
+// Download file
 router.get('/download/:filename', (req, res) => {
   const filename = req.params.filename;
-  const filePath = path.join(pdfDir, filename);
+  const filePath = path.join(uploadsDir, filename);
 
+  console.log(`Request to download file at ${filePath}`);
   if (fs.existsSync(filePath)) {
     res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
     res.sendFile(filePath);
   } else {
+    console.error(`File not found at ${filePath}`);
     res.status(404).send('File not found');
   }
 });

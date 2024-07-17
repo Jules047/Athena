@@ -19,6 +19,7 @@ export class Project {
 
   @CreateDateColumn({ type: 'timestamp' })
     cree_le!: Date;
+  ofValidated: any;
 }
 
 export default Project;

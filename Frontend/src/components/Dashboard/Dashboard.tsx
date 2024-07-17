@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Link, Outlet, Routes, Route, useNavigate } from 'react-router-dom';
+import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Drawer, { DrawerProps } from '@mui/material/Drawer';
+import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
@@ -28,13 +28,10 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import MessageIcon from '@mui/icons-material/Message';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 import Administrators from './Administrators/Administrators';
 import IntranetSettings from './Parametre_intranet/IntranetSettings';
-import FabricationOrders from './FabricationOrders';
+import FabricationOrders from '../ProjectPage';
 import DailyReports from './DailyReports';
 import Messaging from './Messaging';
 import Agenda from './Agenda';
@@ -43,11 +40,8 @@ import Orders from './Administrators/Orders';
 import Statistics from '../Dashboard/Administrators/Statistics';
 import CollaboratorPage from './Parametre_intranet/CollaboratorPage';
 import AtelierPage from './Parametre_intranet/AtelierPage';
-import OfValidatedPage from '../OfValidatedPage';
-import DocumentPage from '../DocumentPage';
-import ProjectPage from '../ProjectPage';
-import './Dashboard.css';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import ProjectPage from './../ProjectPage';
 
 const drawerWidth = 240;
 const miniDrawerWidth = 60;
@@ -75,7 +69,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   }),
 }));
 
-interface AppBarProps extends MuiAppBarProps {
+interface AppBarProps {
   open?: boolean;
 }
 
@@ -112,7 +106,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-const DrawerContent = styled((props: DrawerProps) => <Drawer {...props} />)(({ theme, open }) => ({
+const DrawerContent = styled(Drawer)(({ theme, open }) => ({
   width: open ? drawerWidth : miniDrawerWidth,
   flexShrink: 0,
   whiteSpace: 'nowrap',
@@ -157,10 +151,9 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const [openAdmin, setOpenAdmin] = React.useState(false);
   const [openIntranet, setOpenIntranet] = React.useState(false);
-  const [openFabricationOrders, setOpenFabricationOrders] = React.useState(false);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -186,10 +179,6 @@ const Dashboard: React.FC = () => {
     setOpenIntranet(!openIntranet);
   };
 
-  const handleClickFabricationOrders = () => {
-    setOpenFabricationOrders(!openFabricationOrders);
-  };
-
   const handleLogoutClick = () => {
     setDialogOpen(true);
   };
@@ -206,7 +195,7 @@ const Dashboard: React.FC = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
             color="inherit"
@@ -287,7 +276,7 @@ const Dashboard: React.FC = () => {
           </Collapse>
           <ListItemButton onClick={handleClickIntranet}>
             <ListItemIcon>
-              <HomeRepairServiceIcon />
+              <GroupsIcon />
             </ListItemIcon>
             <ListItemText primary="Paramètres Intranet" />
             {openIntranet ? <ExpandLess /> : <ExpandMore />}
@@ -308,35 +297,12 @@ const Dashboard: React.FC = () => {
               </ListItemButton>
             </List>
           </Collapse>
-          <ListItemButton onClick={handleClickFabricationOrders}>
+          <ListItemButton component={Link} to="fabrication-orders">
             <ListItemIcon>
               <AssignmentTurnedInIcon />
             </ListItemIcon>
             <ListItemText primary="Ordres de Fabrication" />
-            {openFabricationOrders ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={openFabricationOrders} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItemButton sx={{ pl: 4 }} component={Link} to="fabrication-orders/ofvalidated">
-                <ListItemIcon>
-                  <CheckCircleOutlineIcon />
-                </ListItemIcon>
-                <ListItemText primary="OF Validated" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }} component={Link} to="fabrication-orders/documents">
-                <ListItemIcon>
-                  <AssignmentTurnedInIcon />
-                </ListItemIcon>
-                <ListItemText primary="Documents" />
-              </ListItemButton>
-              <ListItemButton sx={{ pl: 4 }} component={Link} to="fabrication-orders/projects">
-                <ListItemIcon>
-                  <AutoStoriesIcon />
-                </ListItemIcon>
-                <ListItemText primary="Projects" />
-              </ListItemButton>
-            </List>
-          </Collapse>
           <ListItemButton component={Link} to="daily-reports">
             <ListItemIcon><TimelineIcon /></ListItemIcon>
             <ListItemText primary="Rapport Journalier d'activités" />
@@ -367,16 +333,11 @@ const Dashboard: React.FC = () => {
           <Route path="intranet-settings" element={<IntranetSettings />} />
           <Route path="intranet-settings/collaborator" element={<CollaboratorPage />} />
           <Route path="intranet-settings/atelier" element={<AtelierPage />} />
-          <Route path="fabrication-orders/*" element={<FabricationOrders />}>
-            <Route path="ofvalidated" element={<OfValidatedPage />} />
-            <Route path="documents" element={<DocumentPage />} />
-            <Route path="projects" element={<ProjectPage />} />
-          </Route>
+          <Route path="fabrication-orders" element={<FabricationOrders />} />
           <Route path="daily-reports" element={<DailyReports />} />
           <Route path="messaging" element={<Messaging />} />
           <Route path="agenda" element={<Agenda />} />
         </Routes>
-        <Outlet />
       </Main>
       <Dialog
         open={dialogOpen}

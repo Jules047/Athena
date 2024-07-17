@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+
 import {
   TextField, Button, IconButton, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Typography, Fab, Dialog, DialogActions,
-  DialogContent, DialogTitle, Snackbar, Alert
+  DialogContent, DialogTitle, Snackbar, Alert, Select, MenuItem, FormControl, InputLabel,
+  SelectChangeEvent
 } from '@mui/material';
 import { Edit, Delete, Add, PictureAsPdf } from '@mui/icons-material';
 
@@ -50,6 +52,13 @@ const ProjectPage: React.FC = () => {
   const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewProject((prev) => ({ ...prev, [name]: value }));
+  };
+
+
+  
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    setNewProject((prev) => ({ ...prev, [name as string]: value as string }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,7 +219,19 @@ const ProjectPage: React.FC = () => {
         <DialogContent>
           <TextField label="Name" name="name" value={newProject.name || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
           <TextField label="Description" name="description" value={newProject.description || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
-          <TextField label="Status" name="status" value={newProject.status || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="status-label">Status</InputLabel>
+            <Select
+              labelId="status-label"
+              label="Status"
+              name="status"
+              value={newProject.status || ''}
+              onChange={handleSelectChange}
+            >
+              <MenuItem value="Brouillon">Brouillon</MenuItem>
+              <MenuItem value="Validé">Validé</MenuItem>
+            </Select>
+          </FormControl>
           <input type="file" onChange={handleFileChange} />
         </DialogContent>
         <DialogActions>

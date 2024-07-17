@@ -13,35 +13,32 @@ exports.OfValidated = void 0;
 const typeorm_1 = require("typeorm");
 const Project_1 = require("./Project");
 const Utilisateurs_1 = require("./Utilisateurs");
-const Document_1 = require("./Document");
 let OfValidated = class OfValidated {
 };
 exports.OfValidated = OfValidated;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], OfValidated.prototype, "id", void 0);
+], OfValidated.prototype, "of_id", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Project_1.Project),
+    (0, typeorm_1.JoinColumn)({ name: 'project_id' }),
+    __metadata("design:type", Project_1.Project)
+], OfValidated.prototype, "project", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Utilisateurs_1.Utilisateurs),
+    (0, typeorm_1.JoinColumn)({ name: 'created_by' }),
     __metadata("design:type", Utilisateurs_1.Utilisateurs)
-], OfValidated.prototype, "createdBy", void 0);
+], OfValidated.prototype, "created_by", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", String)
-], OfValidated.prototype, "approvedBy", void 0);
+    (0, typeorm_1.ManyToOne)(() => Utilisateurs_1.Utilisateurs, { nullable: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'approved_by' }),
+    __metadata("design:type", Utilisateurs_1.Utilisateurs)
+], OfValidated.prototype, "approved_by", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
     __metadata("design:type", Date)
-], OfValidated.prototype, "approvedAt", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => Document_1.Document, document => document.ofValidated),
-    __metadata("design:type", Array)
-], OfValidated.prototype, "documents", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Project_1.Project) // Update the type of the relationship
-    ,
-    __metadata("design:type", Project_1.Project)
-], OfValidated.prototype, "ofValidated", void 0);
+], OfValidated.prototype, "approved_at", void 0);
 exports.OfValidated = OfValidated = __decorate([
     (0, typeorm_1.Entity)()
 ], OfValidated);

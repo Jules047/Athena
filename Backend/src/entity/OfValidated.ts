@@ -1,27 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { Project } from './Project';
 import { Utilisateurs } from './Utilisateurs';
-import { Document } from './Document';
 
 @Entity()
 export class OfValidated {
   @PrimaryGeneratedColumn()
-    id!: number;
+  of_id!: number;
+
+  @ManyToOne(() => Project)
+  @JoinColumn({ name: 'project_id' })
+  project!: Project;
 
   @ManyToOne(() => Utilisateurs)
-    createdBy!: Utilisateurs;
+  @JoinColumn({ name: 'created_by' })
+  created_by!: Utilisateurs;
 
-  @Column({ nullable: true })
-    approvedBy!: string;
+  @ManyToOne(() => Utilisateurs, { nullable: true })
+  @JoinColumn({ name: 'approved_by' })
+  approved_by?: Utilisateurs;
 
-  @Column({ nullable: true })
-    approvedAt!: Date;
-
-  @OneToMany(() => Document, document => document.ofValidated)
-    documents!: Document[];
-
-  @ManyToOne(() => Project) // Update the type of the relationship
-    ofValidated!: Project; // Update the property name
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  approved_at!: Date;
 }
 
 export default OfValidated;

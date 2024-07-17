@@ -16,7 +16,6 @@ import AuthRoutes from "./routes/authRoutes";
 import authMiddleware from "./middleware/authMiddleware";
 import ordreDeFabricationRoutes from "./routes/ordreDeFabricationRoutes";
 import projectRoutes from "./routes/projectRoutes";
-import documentRoutes from "./routes/documentRoutes";
 import ofValidatedRoutes from "./routes/ofValidatedRoutes";
 import path from "path";
 import fs from "fs";
@@ -41,28 +40,29 @@ createConnection().then(async () => {
   app.use('/agenda', authMiddleware, agendaRoutes);
   app.use('/ordres-de-fabrication', ordreDeFabricationRoutes);
   app.use('/projects', projectRoutes);
-  app.use('/documents', documentRoutes);
   app.use('/of_validated', ofValidatedRoutes);
 
-  // Serve static files from the "pdfs" directory
-app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
+  // Serve static files from the "uploads" directory
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Route to download PDF
-app.get('/download/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const filePath = path.join(__dirname, 'pdfs', filename);
+  // Route to download uploaded file
+  app.get('/download/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'uploads', filename);
 
-  if (fs.existsSync(filePath)) {
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
-    res.sendFile(filePath);
-  } else {
-    res.status(404).send('File not found');
-  }
-});
+    console.log(`Request to download file at ${filePath}`);
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+      res.sendFile(filePath);
+    } else {
+      console.error(`File not found at ${filePath}`);
+      res.status(404).send('File not found');
+    }
+  });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 
 }).catch(error => console.log(error));
