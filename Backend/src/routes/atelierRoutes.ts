@@ -1,12 +1,14 @@
+// src/routes/atelierRoutes.ts
 import { Router } from 'express';
 import { FindOneOptions, getRepository } from 'typeorm';
 import { Atelier } from '../entity/Atelier';
+import { Collaborateurs } from '../entity/Collaborateurs';
 
 const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const ateliers = await getRepository(Atelier).find();
+    const ateliers = await getRepository(Atelier).find({ relations: ['collaborateur'] });
     res.json(ateliers);
   } catch (error: any) {
     console.error('Error fetching ateliers:', error);
@@ -16,7 +18,10 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const atelier = await getRepository(Atelier).findOneOrFail({ where: { atelier_id: Number(req.params.id) } } as FindOneOptions<Atelier>);
+    const atelier = await getRepository(Atelier).findOneOrFail({
+      where: { atelier_id: Number(req.params.id) },
+      relations: ['collaborateur']
+    } as FindOneOptions<Atelier>);
     res.json(atelier);
   } catch (error: any) {
     if (error instanceof Error && error.name === 'EntityNotFound') {
@@ -30,8 +35,16 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const atelier = getRepository(Atelier).create(req.body);
-    const result = await getRepository(Atelier).save(atelier);
+    const { collaborateur_id, ...atelierData } = req.body;
+    const atelierRepository = getRepository(Atelier);
+    const collaborateur = await getRepository(Collaborateurs).findOne({ where: { collaborateur_id } });
+
+    if (!collaborateur) {
+      return res.status(400).json({ message: 'Collaborateur not found' });
+    }
+
+    const atelier = atelierRepository.create({ ...atelierData, collaborateur });
+    const result = await atelierRepository.save(atelier);
     res.status(201).json(result);
   } catch (error: any) {
     console.error('Error creating atelier:', error);
@@ -41,14 +54,22 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const atelier = await getRepository(Atelier).findOneOrFail({ where: { atelier_id: Number(req.params.id) } } as FindOneOptions<Atelier>);
-    if (atelier) {
-      getRepository(Atelier).merge(atelier, req.body);
-      const result = await getRepository(Atelier).save(atelier);
-      res.json(result);
-    } else {
-      res.status(404).json({ message: 'Atelier not found' });
+    const { collaborateur_id, ...atelierData } = req.body;
+    const atelierRepository = getRepository(Atelier);
+    const atelier = await atelierRepository.findOneOrFail({
+      where: { atelier_id: Number(req.params.id) },
+      relations: ['collaborateur']
+    } as FindOneOptions<Atelier>);
+
+    const collaborateur = await getRepository(Collaborateurs).findOne({ where: { collaborateur_id } });
+
+    if (!collaborateur) {
+      return res.status(400).json({ message: 'Collaborateur not found' });
     }
+
+    atelierRepository.merge(atelier, { ...atelierData, collaborateur });
+    const result = await atelierRepository.save(atelier);
+    res.json(result);
   } catch (error: any) {
     console.error('Error updating atelier:', error);
     res.status(500).json({ message: 'Error updating atelier', error: error.message });

@@ -3,13 +3,22 @@ import { TextField, Button, IconButton, Table, TableBody, TableCell, TableContai
 import axios from 'axios';
 import { Edit, Delete, Add } from '@mui/icons-material';
 
+interface Collaborateur {
+  collaborateur_id: number;
+  prenom: string;
+  nom: string;
+  qualification: string;
+}
+
 interface Atelier {
   atelier_id: number;
-  type_tâche: string;
+  type_tache: string;
   taux_horaire: number;
   qualification?: string;
-  coût: number;
+  cout: number;
   heures_travail: number;
+  collaborateur_id?: number;
+  collaborateur?: Collaborateur;
 }
 
 const taskTypes = [
@@ -39,6 +48,7 @@ const qualifications = [
 
 const AtelierPage: React.FC = () => {
   const [ateliers, setAteliers] = useState<Atelier[]>([]);
+  const [collaborateurs, setCollaborateurs] = useState<Collaborateur[]>([]);
   const [newAtelier, setNewAtelier] = useState<Partial<Atelier>>({});
   const [editingAtelier, setEditingAtelier] = useState<Atelier | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -49,6 +59,7 @@ const AtelierPage: React.FC = () => {
 
   useEffect(() => {
     fetchAteliers();
+    fetchCollaborateurs();
   }, []);
 
   const fetchAteliers = async () => {
@@ -60,8 +71,20 @@ const AtelierPage: React.FC = () => {
       setAteliers(response.data);
     } catch (error) {
       console.error('Error fetching ateliers:', error);
-      setAlertMessage('Error fetching ateliers');
+      setAlertMessage('Erreur lors de la récupération des ateliers');
       setAlertType('error');
+    }
+  };
+
+  const fetchCollaborateurs = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:3000/collaborateurs', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCollaborateurs(response.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des collaborateurs:', error);
     }
   };
 
@@ -70,9 +93,18 @@ const AtelierPage: React.FC = () => {
     setNewAtelier((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+  const handleSelectChange = (e: SelectChangeEvent<number>) => {
     const { name, value } = e.target;
-    setNewAtelier((prev) => ({ ...prev, [name!]: value }));
+    if (name === "collaborateur_id") {
+      const collaborateur = collaborateurs.find(c => c.collaborateur_id === Number(value));
+      setNewAtelier((prev) => ({
+        ...prev,
+        collaborateur_id: Number(value), // Assurez-vous que la valeur est un nombre
+        qualification: collaborateur ? collaborateur.qualification : prev.qualification
+      }));
+    } else {
+      setNewAtelier((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleDialogOpen = () => {
@@ -102,22 +134,23 @@ const AtelierPage: React.FC = () => {
 
   const addOrUpdateAtelier = async () => {
     try {
-      if (!newAtelier.type_tâche || !newAtelier.taux_horaire || !newAtelier.qualification || !newAtelier.heures_travail) {
-        setAlertMessage('Please fill in all required fields');
+      if (!newAtelier.type_tache || !newAtelier.taux_horaire || !newAtelier.qualification || !newAtelier.heures_travail || !newAtelier.collaborateur_id) {
+        setAlertMessage('Veuillez remplir tous les champs obligatoires');
         setAlertType('error');
         return;
       }
 
       const cost = calculateCost(newAtelier.taux_horaire as number, newAtelier.qualification as string, newAtelier.heures_travail as number);
-      const updatedAtelier = { ...newAtelier, coût: cost };
+      const updatedAtelier = { ...newAtelier, cout: cost };
 
       const token = localStorage.getItem('token');
       if (editingAtelier) {
-        await axios.put(`http://localhost:3000/ateliers/${editingAtelier.atelier_id}`, updatedAtelier, {
+        const response = await axios.put(`http://localhost:3000/ateliers/${editingAtelier.atelier_id}`, updatedAtelier, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        const updatedCollaborateur = collaborateurs.find(c => c.collaborateur_id === newAtelier.collaborateur_id);
         setAteliers(ateliers.map((atelier) =>
-          atelier.atelier_id === editingAtelier.atelier_id ? { ...atelier, ...updatedAtelier } : atelier
+          atelier.atelier_id === editingAtelier.atelier_id ? { ...atelier, ...response.data, collaborateur: updatedCollaborateur } : atelier
         ));
         setEditingAtelier(null);
         setAlertMessage('Modification réussie');
@@ -126,18 +159,19 @@ const AtelierPage: React.FC = () => {
         const response = await axios.post('http://localhost:3000/ateliers', updatedAtelier, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setAteliers([...ateliers, response.data]);
+        const newCollaborateur = collaborateurs.find(c => c.collaborateur_id === newAtelier.collaborateur_id);
+        setAteliers([...ateliers, { ...response.data, collaborateur: newCollaborateur }]);
         setAlertMessage('Nouvel atelier ajouté');
         setAlertType('success');
       }
       setNewAtelier({});
       setDialogOpen(false);
     } catch (error) {
-      console.error('Error adding/updating atelier:', error);
+      console.error('Erreur lors de l\'ajout/mise à jour de l\'atelier:', error);
       if (axios.isAxiosError(error)) {
-        setAlertMessage(`Error adding/updating atelier: ${error.response?.data || error.message}`);
+        setAlertMessage(`Erreur lors de l'ajout/mise à jour de l'atelier: ${error.response?.data || error.message}`);
       } else {
-        setAlertMessage('Unexpected error');
+        setAlertMessage('Erreur inattendue');
       }
       setAlertType('error');
     }
@@ -145,10 +179,12 @@ const AtelierPage: React.FC = () => {
 
   const editAtelier = (atelier: Atelier) => {
     setNewAtelier({
-      type_tâche: atelier.type_tâche,
+      type_tache: atelier.type_tache,
       taux_horaire: atelier.taux_horaire,
       qualification: atelier.qualification,
-      heures_travail: atelier.heures_travail
+      heures_travail: atelier.heures_travail,
+      collaborateur_id: atelier.collaborateur_id,
+      collaborateur: atelier.collaborateur
     });
     setEditingAtelier(atelier);
     setDialogOpen(true);
@@ -162,26 +198,27 @@ const AtelierPage: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAteliers(ateliers.filter(atelier => atelier.atelier_id !== atelierToDelete));
-      setAlertMessage('Atelier deleted successfully');
+      setAlertMessage('Atelier supprimé avec succès');
       setAlertType('success');
       handleConfirmDialogClose();
     } catch (error) {
-      console.error('Error deleting atelier:', error);
-      setAlertMessage('Error deleting atelier');
+      console.error('Erreur lors de la suppression de l\'atelier:', error);
+      setAlertMessage('Erreur lors de la suppression de l\'atelier');
       setAlertType('error');
     }
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
       <Typography variant="h6">Liste des ateliers</Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Collaborateur</TableCell>
               <TableCell>Type de tâche</TableCell>
-              <TableCell>Taux horaire</TableCell>
               <TableCell>Qualification</TableCell>
+              <TableCell>Taux horaire</TableCell>
               <TableCell>Heures de travail</TableCell>
               <TableCell>Coût</TableCell>
               <TableCell>Actions</TableCell>
@@ -190,11 +227,12 @@ const AtelierPage: React.FC = () => {
           <TableBody>
             {ateliers.map((atelier) => (
               <TableRow key={atelier.atelier_id}>
-                <TableCell>{atelier.type_tâche}</TableCell>
-                <TableCell>{atelier.taux_horaire}</TableCell>
+                <TableCell>{atelier.collaborateur ? `${atelier.collaborateur.nom} ${atelier.collaborateur.prenom}` : 'N/A'}</TableCell>
+                <TableCell>{atelier.type_tache}</TableCell>
                 <TableCell>{atelier.qualification}</TableCell>
+                <TableCell>{atelier.taux_horaire}</TableCell>
                 <TableCell>{atelier.heures_travail}</TableCell>
-                <TableCell>{atelier.coût}</TableCell>
+                <TableCell>{atelier.cout} Ar</TableCell>
                 <TableCell>
                   <IconButton onClick={() => editAtelier(atelier)}>
                     <Edit />
@@ -215,23 +253,62 @@ const AtelierPage: React.FC = () => {
         <DialogTitle>{editingAtelier ? 'Modifier Atelier' : 'Ajouter Atelier'}</DialogTitle>
         <DialogContent>
           <FormControl fullWidth margin="normal">
+            <InputLabel>Collaborateur</InputLabel>
+            <Select
+              name="collaborateur_id"
+              value={newAtelier.collaborateur_id as number | "" | undefined}
+              onChange={handleSelectChange}
+            >
+              {collaborateurs.map((collaborateur) => (
+                <MenuItem key={collaborateur.collaborateur_id} value={collaborateur.collaborateur_id}>
+                  {collaborateur.nom} {collaborateur.prenom}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth margin="normal">
             <InputLabel>Type de tâche</InputLabel>
-            <Select name="type_tâche" value={newAtelier.type_tâche || ''} onChange={handleSelectChange}>
+            <Select
+              name="type_tache"
+              value={newAtelier.type_tache as number | "" | undefined}
+              onChange={handleSelectChange}
+              inputProps={{ inputMode: 'numeric' }}
+            >
               {taskTypes.map((taskType, index) => (
                 <MenuItem key={index} value={taskType}>{taskType}</MenuItem>
               ))}
             </Select>
           </FormControl>
-          <TextField label="Taux horaire" name="taux_horaire" type="number" value={newAtelier.taux_horaire || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
           <FormControl fullWidth margin="normal">
             <InputLabel>Qualification</InputLabel>
-            <Select name="qualification" value={newAtelier.qualification || ''} onChange={handleSelectChange}>
+            <Select
+              name="qualification"
+              value={newAtelier.qualification as number | "" | undefined}
+              onChange={handleSelectChange}
+            >
               {qualifications.map((qualification) => (
                 <MenuItem key={qualification.value} value={qualification.value}>{qualification.label}</MenuItem>
               ))}
             </Select>
           </FormControl>
-          <TextField label="Heures de travail" name="heures_travail" type="number" value={newAtelier.heures_travail || ''} onChange={handleTextFieldChange} fullWidth margin="normal" />
+          <TextField
+            label="Taux horaire"
+            name="taux_horaire"
+            type="number"
+            value={newAtelier.taux_horaire || ''}
+            onChange={handleTextFieldChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Heures de travail"
+            name="heures_travail"
+            type="number"
+            value={newAtelier.heures_travail || ''}
+            onChange={handleTextFieldChange}
+            fullWidth
+            margin="normal"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="secondary">Annuler</Button>

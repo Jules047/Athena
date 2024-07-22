@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Collaborateurs = void 0;
 const typeorm_1 = require("typeorm");
+const Atelier_1 = require("./Atelier");
 let Collaborateurs = class Collaborateurs {
 };
 exports.Collaborateurs = Collaborateurs;
@@ -35,8 +36,7 @@ __decorate([
     __metadata("design:type", String)
 ], Collaborateurs.prototype, "droits_acces", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 255, default: 'defaultpassword' }) // Ajouter une valeur par défaut
-    ,
+    (0, typeorm_1.Column)({ length: 255, default: 'defaultpassword' }),
     __metadata("design:type", String)
 ], Collaborateurs.prototype, "mot_de_passe", void 0);
 __decorate([
@@ -47,6 +47,10 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" }),
     __metadata("design:type", Date)
 ], Collaborateurs.prototype, "modifie_le", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Atelier_1.Atelier, (atelier) => atelier.collaborateur),
+    __metadata("design:type", Array)
+], Collaborateurs.prototype, "ateliers", void 0);
 exports.Collaborateurs = Collaborateurs = __decorate([
-    (0, typeorm_1.Entity)({ name: "collaborateurs" }) // Assurez-vous que le nom de la table correspond à celui de votre base de données
+    (0, typeorm_1.Entity)({ name: "collaborateurs" })
 ], Collaborateurs);

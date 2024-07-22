@@ -17,6 +17,7 @@ const typeorm_1 = require("typeorm");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const body_parser_1 = __importDefault(require("body-parser")); // Ajout de body-parser
 const UtilisateursRoutes_1 = __importDefault(require("./routes/UtilisateursRoutes"));
 const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
 const statRoutes_1 = __importDefault(require("./routes/statRoutes"));
@@ -30,7 +31,6 @@ const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const authMiddleware_1 = __importDefault(require("./middleware/authMiddleware"));
 const ordreDeFabricationRoutes_1 = __importDefault(require("./routes/ordreDeFabricationRoutes"));
 const projectRoutes_1 = __importDefault(require("./routes/projectRoutes"));
-const ofValidatedRoutes_1 = __importDefault(require("./routes/ofValidatedRoutes"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config(); // Charge les variables d'environnement à partir du fichier .env
@@ -38,6 +38,7 @@ dotenv_1.default.config(); // Charge les variables d'environnement à partir du 
     const app = (0, express_1.default)();
     app.use((0, cors_1.default)());
     app.use(express_1.default.json());
+    // Ajouter le middleware body-parser seulement pour les routes qui ne sont pas liées à l'upload de fichiers
     app.use('/auth', authRoutes_1.default);
     app.use('/utilisateurs', authMiddleware_1.default, UtilisateursRoutes_1.default);
     app.use('/administrateurs', authMiddleware_1.default, adminRoutes_1.default);
@@ -45,12 +46,14 @@ dotenv_1.default.config(); // Charge les variables d'environnement à partir du 
     app.use('/commandes', authMiddleware_1.default, commandeRoutes_1.default);
     app.use('/collaborateurs', authMiddleware_1.default, collaborateurRoutes_1.default);
     app.use('/ateliers', authMiddleware_1.default, atelierRoutes_1.default);
-    app.use('/rapport', authMiddleware_1.default, rapportActivitesRoutes_1.default);
+    app.use('/rapports', authMiddleware_1.default, rapportActivitesRoutes_1.default);
     app.use('/messagerieInterne', authMiddleware_1.default, messagerieRoutes_1.default);
     app.use('/agenda', authMiddleware_1.default, agendaRoutes_1.default);
     app.use('/ordres-de-fabrication', ordreDeFabricationRoutes_1.default);
     app.use('/projects', projectRoutes_1.default);
-    app.use('/of_validated', ofValidatedRoutes_1.default);
+    // Ajouter body-parser pour toutes les autres routes
+    app.use(body_parser_1.default.json());
+    // Routes d'upload de fichiers, exclues de body-parser
     // Serve static files from the "uploads" directory
     app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, 'uploads')));
     // Route to download uploaded file

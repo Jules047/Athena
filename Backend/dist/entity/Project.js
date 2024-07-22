@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 const typeorm_1 = require("typeorm");
+const RapportsActivit_s_1 = require("./RapportsActivit\u00E9s");
 let Project = class Project {
 };
 exports.Project = Project;
@@ -19,11 +20,11 @@ __decorate([
     __metadata("design:type", Number)
 ], Project.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ length: 100 }),
     __metadata("design:type", String)
 ], Project.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ type: "text", nullable: true }),
     __metadata("design:type", String)
 ], Project.prototype, "description", void 0);
 __decorate([
@@ -31,15 +32,21 @@ __decorate([
     __metadata("design:type", String)
 ], Project.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }) // Permettre temporairement NULL pour éviter des erreurs lors de la création initiale
-    ,
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Project.prototype, "filePath", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)({ type: 'timestamp' }),
+    (0, typeorm_1.CreateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", Date)
 ], Project.prototype, "cree_le", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" }),
+    __metadata("design:type", Date)
+], Project.prototype, "modifie_le", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => RapportsActivit_s_1.RapportsActivités, (rapport) => rapport.project),
+    __metadata("design:type", Array)
+], Project.prototype, "rapportsActivit\u00E9s", void 0);
 exports.Project = Project = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)({ name: "projects" })
 ], Project);
-exports.default = Project;

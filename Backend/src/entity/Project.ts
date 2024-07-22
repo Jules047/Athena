@@ -1,25 +1,29 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { RapportsActivités } from './RapportsActivités';
 
-@Entity()
+@Entity({ name: "projects" })
 export class Project {
   @PrimaryGeneratedColumn()
-    id!: number;
+  id!: number;
+
+  @Column({ length: 100 })
+  name!: string;
+
+  @Column({ type: "text", nullable: true })
+  description?: string;
 
   @Column()
-    name!: string;
+  status!: string;
 
-  @Column({ nullable: true })
-    description?: string;
+  @Column({ nullable: true }) 
+  filePath?: string;
 
-  @Column()
-    status!: string;
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  cree_le!: Date;
 
-  @Column({ nullable: true }) // Permettre temporairement NULL pour éviter des erreurs lors de la création initiale
-    filePath?: string;
+  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  modifie_le!: Date;
 
-  @CreateDateColumn({ type: 'timestamp' })
-    cree_le!: Date;
-  ofValidated: any;
+  @OneToMany(() => RapportsActivités, (rapport) => rapport.project)
+  rapportsActivités!: RapportsActivités[];
 }
-
-export default Project;

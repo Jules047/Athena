@@ -1,22 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+// src/entity/Atelier.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Collaborateurs } from './Collaborateurs';
 
-@Entity({ name: "atelier" })  // Assurez-vous que le nom de la table correspond à celui de votre base de données
+@Entity({ name: 'atelier' })
 export class Atelier {
   @PrimaryGeneratedColumn()
   atelier_id!: number;
 
   @Column({ length: 50 })
-  type_tâche!: string;
+  type_tache!: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   taux_horaire!: number;
 
   @Column({ length: 20, nullable: true })
   qualification!: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
-  coût!: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  cout!: number;
 
-  @Column({ type: "int" }) // Ajouter cette ligne
+  @Column({ type: 'int' })
   heures_travail!: number;
+
+  @ManyToOne(() => Collaborateurs, (collaborateur) => collaborateur.ateliers, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  collaborateur?: Collaborateurs;
 }

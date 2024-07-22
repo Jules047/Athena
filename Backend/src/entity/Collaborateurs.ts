@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Atelier } from './Atelier';
 
-@Entity({ name: "collaborateurs" })  // Assurez-vous que le nom de la table correspond à celui de votre base de données
+@Entity({ name: "collaborateurs" })
 export class Collaborateurs {
   @PrimaryGeneratedColumn()
   collaborateur_id!: number;
@@ -17,7 +18,7 @@ export class Collaborateurs {
   @Column({ type: "text", nullable: true })
   droits_acces!: string;
 
-  @Column({ length: 255, default: 'defaultpassword' })  // Ajouter une valeur par défaut
+  @Column({ length: 255, default: 'defaultpassword' })
   mot_de_passe!: string;
 
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
@@ -25,4 +26,7 @@ export class Collaborateurs {
 
   @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
   modifie_le!: Date;
+
+  @OneToMany(() => Atelier, (atelier) => atelier.collaborateur)
+  ateliers!: Atelier[];
 }

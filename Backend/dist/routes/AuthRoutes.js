@@ -79,7 +79,7 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-        const token = jsonwebtoken_1.default.sign({ id: user.utilisateur_id, prenom: user.prenom, role: user.role }, process.env.JWT_SECRET_KEY || 'code token', { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ id: user.utilisateur_id, prenom: user.prenom, role: user.role }, process.env.JWT_SECRET_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsInByZW5vbSI6InNzc3MiLCJyb2xlIjoiQ2xpZW50IiwiaWF0IjoxNzIxMzk4MTczLCJleHAiOjE3MjE0MDE3NzN9.woQ46oKNDRt1q_Y-349fZ5Fbe13YJ7lAS5NaEZ2Yqz8', { expiresIn: '1h' });
         res.json({ token });
     }
     catch (error) {

@@ -10,7 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Atelier = void 0;
+// src/entity/Atelier.ts
 const typeorm_1 = require("typeorm");
+const Collaborateurs_1 = require("./Collaborateurs");
 let Atelier = class Atelier {
 };
 exports.Atelier = Atelier;
@@ -21,9 +23,9 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ length: 50 }),
     __metadata("design:type", String)
-], Atelier.prototype, "type_t\u00E2che", void 0);
+], Atelier.prototype, "type_tache", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "decimal", precision: 10, scale: 2 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
     __metadata("design:type", Number)
 ], Atelier.prototype, "taux_horaire", void 0);
 __decorate([
@@ -31,14 +33,20 @@ __decorate([
     __metadata("design:type", String)
 ], Atelier.prototype, "qualification", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "decimal", precision: 10, scale: 2 }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
     __metadata("design:type", Number)
-], Atelier.prototype, "co\u00FBt", void 0);
+], Atelier.prototype, "cout", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "int" }) // Ajouter cette ligne
-    ,
+    (0, typeorm_1.Column)({ type: 'int' }),
     __metadata("design:type", Number)
 ], Atelier.prototype, "heures_travail", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Collaborateurs_1.Collaborateurs, (collaborateur) => collaborateur.ateliers, {
+        nullable: true,
+        onDelete: 'SET NULL',
+    }),
+    __metadata("design:type", Collaborateurs_1.Collaborateurs)
+], Atelier.prototype, "collaborateur", void 0);
 exports.Atelier = Atelier = __decorate([
-    (0, typeorm_1.Entity)({ name: "atelier" }) // Assurez-vous que le nom de la table correspond à celui de votre base de données
+    (0, typeorm_1.Entity)({ name: 'atelier' })
 ], Atelier);

@@ -11,7 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RapportsActivités = void 0;
 const typeorm_1 = require("typeorm");
-const Utilisateurs_1 = require("./Utilisateurs");
+const Collaborateurs_1 = require("./Collaborateurs");
+const Atelier_1 = require("./Atelier");
+const Project_1 = require("./Project");
 const Commandes_1 = require("./Commandes");
 let RapportsActivités = class RapportsActivités {
 };
@@ -21,10 +23,20 @@ __decorate([
     __metadata("design:type", Number)
 ], RapportsActivités.prototype, "rapport_id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Utilisateurs_1.Utilisateurs, utilisateur => utilisateur.utilisateur_id),
-    (0, typeorm_1.JoinColumn)({ name: "utilisateur_id" }),
-    __metadata("design:type", Utilisateurs_1.Utilisateurs)
-], RapportsActivités.prototype, "utilisateur", void 0);
+    (0, typeorm_1.ManyToOne)(() => Collaborateurs_1.Collaborateurs, collaborateur => collaborateur.collaborateur_id),
+    (0, typeorm_1.JoinColumn)({ name: "collaborateur_id" }),
+    __metadata("design:type", Collaborateurs_1.Collaborateurs)
+], RapportsActivités.prototype, "collaborateur", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Atelier_1.Atelier, atelier => atelier.atelier_id),
+    (0, typeorm_1.JoinColumn)({ name: "atelier_id" }),
+    __metadata("design:type", Atelier_1.Atelier)
+], RapportsActivités.prototype, "atelier", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Project_1.Project, project => project.id),
+    (0, typeorm_1.JoinColumn)({ name: "project_id" }),
+    __metadata("design:type", Project_1.Project)
+], RapportsActivités.prototype, "project", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Commandes_1.Commandes, commande => commande.commande_id),
     (0, typeorm_1.JoinColumn)({ name: "commande_id" }),
@@ -35,17 +47,17 @@ __decorate([
     __metadata("design:type", Date)
 ], RapportsActivités.prototype, "date", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ length: 50 }),
-    __metadata("design:type", String)
-], RapportsActivités.prototype, "type_activit\u00E9", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "interval" }),
-    __metadata("design:type", Object)
+    (0, typeorm_1.Column)({ type: "int" }),
+    __metadata("design:type", Number)
 ], RapportsActivités.prototype, "dur\u00E9e", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "decimal", precision: 10, scale: 2 }),
     __metadata("design:type", Number)
 ], RapportsActivités.prototype, "co\u00FBt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], RapportsActivités.prototype, "filePath", void 0);
 exports.RapportsActivités = RapportsActivités = __decorate([
-    (0, typeorm_1.Entity)({ name: "rapports_activités" }) // Assurez-vous que le nom de la table correspond à celui de votre base de données
+    (0, typeorm_1.Entity)({ name: "rapports_activités" })
 ], RapportsActivités);

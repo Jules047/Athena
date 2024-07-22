@@ -128,7 +128,7 @@ const CollaboratorPanel: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
       <Typography variant="h6">Liste des collaborateurs</Typography>
       <TableContainer component={Paper}>
         <Table>

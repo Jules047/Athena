@@ -75,7 +75,7 @@ const Users: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
       <h2>Gestion des Utilisateurs</h2>
       <ul className="users-list">
         {users.map(user => (

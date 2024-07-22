@@ -11,7 +11,7 @@ const authMiddleware = (req, res, next) => {
         return res.status(401).json({ message: 'Access denied, no token provided.' });
     }
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY || 'code token');
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsInByZW5vbSI6InNzc3MiLCJyb2xlIjoiQ2xpZW50IiwiaWF0IjoxNzIxMzk4MTczLCJleHAiOjE3MjE0MDE3NzN9.woQ46oKNDRt1q_Y-349fZ5Fbe13YJ7lAS5NaEZ2Yqz8');
         req.user = decoded;
         next();
     }

@@ -3,6 +3,7 @@ import { createConnection } from "typeorm";
 import express from "express";
 import cors from "cors";
 import dotenv from 'dotenv';
+import bodyParser from 'body-parser'; // Ajout de body-parser
 import UtilisateursRoutes from "./routes/UtilisateursRoutes";
 import adminRoutes from "./routes/adminRoutes";
 import statRoutes from "./routes/statRoutes";
@@ -16,9 +17,9 @@ import AuthRoutes from "./routes/authRoutes";
 import authMiddleware from "./middleware/authMiddleware";
 import ordreDeFabricationRoutes from "./routes/ordreDeFabricationRoutes";
 import projectRoutes from "./routes/projectRoutes";
-import ofValidatedRoutes from "./routes/ofValidatedRoutes";
 import path from "path";
 import fs from "fs";
+
 
 dotenv.config(); // Charge les variables d'environnement à partir du fichier .env
 
@@ -28,6 +29,7 @@ createConnection().then(async () => {
   app.use(cors());
   app.use(express.json());
 
+  // Ajouter le middleware body-parser seulement pour les routes qui ne sont pas liées à l'upload de fichiers
   app.use('/auth', AuthRoutes);
   app.use('/utilisateurs', authMiddleware, UtilisateursRoutes);
   app.use('/administrateurs', authMiddleware, adminRoutes);
@@ -35,12 +37,18 @@ createConnection().then(async () => {
   app.use('/commandes', authMiddleware, commandeRoutes);
   app.use('/collaborateurs', authMiddleware, collaborateurRoutes);
   app.use('/ateliers', authMiddleware, atelierRoutes);
-  app.use('/rapport', authMiddleware, rapportActivitesRoutes);
+  app.use('/rapports', authMiddleware, rapportActivitesRoutes);
   app.use('/messagerieInterne', authMiddleware, messagerieRoutes);
   app.use('/agenda', authMiddleware, agendaRoutes);
   app.use('/ordres-de-fabrication', ordreDeFabricationRoutes);
   app.use('/projects', projectRoutes);
-  app.use('/of_validated', ofValidatedRoutes);
+
+
+  // Ajouter body-parser pour toutes les autres routes
+  app.use(bodyParser.json());
+
+  // Routes d'upload de fichiers, exclues de body-parser
+
 
   // Serve static files from the "uploads" directory
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

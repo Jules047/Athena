@@ -84,7 +84,7 @@ const CommandesList: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
       <Typography variant="h4" gutterBottom>
         Liste des commandes
       </Typography>

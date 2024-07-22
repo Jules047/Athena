@@ -2,7 +2,6 @@ import { DataSource } from 'typeorm';
 import "reflect-metadata";
 import { Project } from './entity/Project';
 import { Utilisateurs } from './entity/Utilisateurs';
-import { OfValidated } from './entity/OfValidated';
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -13,7 +12,7 @@ export const AppDataSource = new DataSource({
   database: "athena",
   synchronize: true,
   logging: true,
-  entities: [Project, Utilisateurs, OfValidated ],
+  entities: [Project, Utilisateurs ],
   migrations: ["src/migrations/**/*.ts"],
   subscribers: ["src/subscribers/**/*.ts"],
 });

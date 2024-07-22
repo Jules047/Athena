@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Commandes = void 0;
-// src/entity/Commandes.ts
 const typeorm_1 = require("typeorm");
+const RapportsActivit_s_1 = require("./RapportsActivit\u00E9s");
 let Commandes = class Commandes {
 };
 exports.Commandes = Commandes;
@@ -43,6 +43,10 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" }),
     __metadata("design:type", Date)
 ], Commandes.prototype, "modifie_le", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => RapportsActivit_s_1.RapportsActivités, (rapport) => rapport.commande),
+    __metadata("design:type", Array)
+], Commandes.prototype, "rapportsActivit\u00E9s", void 0);
 exports.Commandes = Commandes = __decorate([
     (0, typeorm_1.Entity)({ name: "commandes" })
 ], Commandes);

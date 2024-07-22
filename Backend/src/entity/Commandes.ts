@@ -1,5 +1,5 @@
-// src/entity/Commandes.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { RapportsActivités } from './RapportsActivités';
 
 @Entity({ name: "commandes" })
 export class Commandes {
@@ -23,4 +23,7 @@ export class Commandes {
 
   @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
   modifie_le!: Date;
+
+  @OneToMany(() => RapportsActivités, (rapport) => rapport.commande)
+  rapportsActivités!: RapportsActivités[];
 }

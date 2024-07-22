@@ -28,6 +28,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import MessageIcon from '@mui/icons-material/Message';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 import Administrators from './Administrators/Administrators';
 import IntranetSettings from './Parametre_intranet/IntranetSettings';
@@ -42,6 +43,7 @@ import CollaboratorPage from './Parametre_intranet/CollaboratorPage';
 import AtelierPage from './Parametre_intranet/AtelierPage';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import ProjectPage from './../ProjectPage';
+import RapportPage from '../RapportPage';
 
 const drawerWidth = 240;
 const miniDrawerWidth = 60;

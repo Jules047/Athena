@@ -5,7 +5,6 @@ const typeorm_1 = require("typeorm");
 require("reflect-metadata");
 const Project_1 = require("./entity/Project");
 const Utilisateurs_1 = require("./entity/Utilisateurs");
-const OfValidated_1 = require("./entity/OfValidated");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
     host: "localhost",
@@ -15,7 +14,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     database: "athena",
     synchronize: true,
     logging: true,
-    entities: [Project_1.Project, Utilisateurs_1.Utilisateurs, OfValidated_1.OfValidated],
+    entities: [Project_1.Project, Utilisateurs_1.Utilisateurs],
     migrations: ["src/migrations/**/*.ts"],
     subscribers: ["src/subscribers/**/*.ts"],
 });
