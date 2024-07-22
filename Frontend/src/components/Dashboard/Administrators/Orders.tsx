@@ -105,7 +105,7 @@ const CommandesList: React.FC = () => {
                 <TableCell>{commande.nom}</TableCell>
                 <TableCell>{commande.description}</TableCell>
                 <TableCell>{commande.type}</TableCell>
-                <TableCell>{commande.estimation}</TableCell>
+                <TableCell>{(commande.estimation ?? 0).toFixed(2).replace(/(\.\d)$/, '$10')} Ar</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleEdit(commande)}>
                     <Edit />
@@ -132,7 +132,7 @@ const CommandesList: React.FC = () => {
           setAlertType={setAlertType}
         />
       )}
-     <Snackbar
+      <Snackbar
         open={alertMessage !== null}
         autoHideDuration={6000}
         onClose={() => setAlertMessage(null)}
