@@ -29,21 +29,20 @@ import MessageIcon from '@mui/icons-material/Message';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import DescriptionIcon from '@mui/icons-material/Description';
-
-import Administrators from './Administrators/Administrators';
-import IntranetSettings from './Parametre_intranet/IntranetSettings';
-import FabricationOrders from '../ProjectPage';
-import DailyReports from './DailyReports';
-import Messaging from './Messaging';
-import Agenda from './Agenda';
-import Users from './Administrators/Users';
-import Orders from './Administrators/Orders';
-import Statistics from '../Dashboard/Administrators/Statistics';
-import CollaboratorPage from './Parametre_intranet/CollaboratorPage';
-import AtelierPage from './Parametre_intranet/AtelierPage';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import ProjectPage from './../ProjectPage';
-import RapportPage from '../RapportPage';
+import Loadable from '../../utils/Loadable';
+
+const LoadableAdministrators = Loadable(() => import('./Administrators/Administrators'));
+const LoadableIntranetSettings = Loadable(() => import('./Parametre_intranet/IntranetSettings'));
+const LoadableFabricationOrders = Loadable(() => import('../ProjectPage'));
+const LoadableDailyReports = Loadable(() => import('./DailyReports'));
+const LoadableMessaging = Loadable(() => import('./Messaging'));
+const LoadableAgenda = Loadable(() => import('./Agenda'));
+const LoadableUsers = Loadable(() => import('./Administrators/Users'));
+const LoadableOrders = Loadable(() => import('./Administrators/Orders'));
+const LoadableStatistics = Loadable(() => import('./Administrators/Statistics'));
+const LoadableCollaboratorPage = Loadable(() => import('./Parametre_intranet/CollaboratorPage'));
+const LoadableAtelierPage = Loadable(() => import('./Parametre_intranet/AtelierPage'));
 
 const drawerWidth = 240;
 const miniDrawerWidth = 60;
@@ -209,7 +208,7 @@ const Dashboard: React.FC = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Dashboard_1
+            Dashboard
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <div>
@@ -327,18 +326,18 @@ const Dashboard: React.FC = () => {
       <Main open={open}>
         <DrawerHeader />
         <Routes>
-          <Route path="/" element={<Statistics />} />
-          <Route path="administrators/*" element={<Administrators />} />
-          <Route path="administrators/users" element={<Users />} />
-          <Route path="administrators/orders" element={<Orders />} />
-          <Route path="statistics" element={<Statistics />} />
-          <Route path="intranet-settings" element={<IntranetSettings />} />
-          <Route path="intranet-settings/collaborator" element={<CollaboratorPage />} />
-          <Route path="intranet-settings/atelier" element={<AtelierPage />} />
-          <Route path="fabrication-orders" element={<FabricationOrders />} />
-          <Route path="daily-reports" element={<DailyReports />} />
-          <Route path="messaging" element={<Messaging />} />
-          <Route path="agenda" element={<Agenda />} />
+          <Route path="/" element={<LoadableStatistics />} />
+          <Route path="administrators/*" element={<LoadableAdministrators />} />
+          <Route path="administrators/users" element={<LoadableUsers />} />
+          <Route path="administrators/orders" element={<LoadableOrders />} />
+          <Route path="statistics" element={<LoadableStatistics />} />
+          <Route path="intranet-settings" element={<LoadableIntranetSettings />} />
+          <Route path="intranet-settings/collaborator" element={<LoadableCollaboratorPage />} />
+          <Route path="intranet-settings/atelier" element={<LoadableAtelierPage />} />
+          <Route path="fabrication-orders" element={<LoadableFabricationOrders />} />
+          <Route path="daily-reports" element={<LoadableDailyReports />} />
+          <Route path="messaging" element={<LoadableMessaging />} />
+          <Route path="agenda" element={<LoadableAgenda />} />
         </Routes>
       </Main>
       <Dialog
